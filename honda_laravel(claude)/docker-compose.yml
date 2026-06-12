@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: honda_dealership_app
+    ports:
+      - "8080:80"
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - DB_DATABASE=honda_dealership
+      - APP_KEY=base64:WILL_BE_GENERATED_ON_STARTUP==
+      - APP_ENV=local
+      - APP_DEBUG=true
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor        # não sobrescreve o vendor do container
+    networks:
+      - honda_network
+
+  db:
+    image: mysql:8.0
+    container_name: honda_dealership_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=honda_dealership
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - honda_network
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8090:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_PASSWORD=secret
+    networks:
+      - honda_network
+
+volumes:
+  db_data:
+
+networks:
+  honda_network:
+    driver: bridge
