@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log
+
+# Laravel logs e cache
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*
+
+# Ambiente local
+.env
+.env.example
+.env.docker
+
+# Testes
+tests/
+phpunit.xml
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-entrypoint.sh
+.dockerignore
+
+# Outros
+*.md
+.editorconfig
+Honda/

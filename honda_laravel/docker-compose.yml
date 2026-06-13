@@ -1,0 +1,103 @@
+version: '3.8'
+
+# =====================================================
+# Honda Dealership – Docker Compose
+# Serviços: app (Laravel), db (MySQL), phpmyadmin
+# =====================================================
+
+services:
+
+  # ── 1. Aplicação Laravel ──────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: honda_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      APP_NAME: "Honda Dealership"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8080"
+      APP_KEY: "${APP_KEY}"
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: honda_dealership
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      LOG_CHANNEL: stderr
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Monta o código para desenvolvimento (hot-reload sem rebuild)
+      - .:/var/www/html
+      # Preserva vendor instalado durante o build
+      - vendor_data:/var/www/html/vendor
+      # Preserva storage
+      - storage_data:/var/www/html/storage
+    networks:
+      - honda_network
+
+  # ── 2. MySQL 8 ───────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: honda_db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"        # 3307 no host para não conflitar com XAMPP
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: honda_dealership
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - honda_network
+
+  # ── 3. phpMyAdmin ────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: honda_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: "3306"
+      PMA_USER: root
+      PMA_PASSWORD: secret
+      UPLOAD_LIMIT: 64M
+      MEMORY_LIMIT: 256M
+    networks:
+      - honda_network
+
+# ── Volumes persistentes ─────────────────────────
+volumes:
+  db_data:
+    driver: local
+  vendor_data:
+    driver: local
+  storage_data:
+    driver: local
+
+# ── Rede interna ─────────────────────────────────
+networks:
+  honda_network:
+    driver: bridge
