@@ -50,6 +50,10 @@
                         <td class="px-5 py-3.5 text-gray-600">R$ {{ number_format($funcionario->salario, 2, ',', '.') }}</td>
                         <td class="px-5 py-3.5 text-gray-600">{{ $funcionario->data_admissao->format('d/m/Y') }}</td>
                         <td class="px-5 py-3.5 text-right space-x-2">
+                            <a href="{{ route('funcionarios.show', $funcionario) }}"
+                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-medium rounded-lg transition">
+                                Visualizar
+                            </a>
                             <a href="{{ route('funcionarios.edit', $funcionario) }}"
                                class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-medium rounded-lg transition">
                                 Editar
