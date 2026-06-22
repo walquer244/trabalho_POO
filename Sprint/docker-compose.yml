@@ -11,7 +11,6 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=secret
       - DB_DATABASE=sprint_db
-      - APP_KEY=base64:WILL_BE_GENERATED_ON_STARTUP==
       - APP_ENV=local
       - APP_DEBUG=true
     depends_on:
@@ -26,7 +25,7 @@ services:
     container_name: Sprint_app_db
     restart: always
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=sprint_db
