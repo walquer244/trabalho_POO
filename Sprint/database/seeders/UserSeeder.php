@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -14,8 +14,9 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@sprint.com'],
             [
+                'name' => 'Administrador',
                 'password' => Hash::make('admin123'),
-                'role'     => 'admin',
+                'role' => 'admin',
             ]
         );
 
@@ -23,8 +24,9 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'funcionario@sprint.com'],
             [
+                'name' => 'Funcionário',
                 'password' => Hash::make('func123'),
-                'role'     => 'funcionario',
+                'role' => 'funcionario',
             ]
         );
     }

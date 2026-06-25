@@ -18,7 +18,7 @@ class Funcionario extends Model
 
     protected $casts = [
         'data_nascimento' => 'date',
-        'data_admissao'   => 'date',
-        'salario'         => 'decimal:2',
+        'data_admissao' => 'date',
+        'salario' => 'decimal:2',
     ];
 }

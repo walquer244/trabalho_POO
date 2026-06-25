@@ -12,6 +12,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
+
         return view('users.index', compact('users'));
     }
 
@@ -23,24 +24,28 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'role'     => ['required', 'string', Rule::in(['admin', 'funcionario'])],
+            'role' => ['required', 'string', Rule::in(['admin', 'funcionario'])],
         ], [
-            'email.required'    => 'O e-mail é obrigatório.',
-            'email.email'       => 'Insira um e-mail válido.',
-            'email.unique'      => 'Este e-mail já está sendo utilizado.',
+            'name.string' => 'O nome deve ser um texto válido.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'email.required' => 'O e-mail é obrigatório.',
+            'email.email' => 'Insira um e-mail válido.',
+            'email.unique' => 'Este e-mail já está sendo utilizado.',
             'password.required' => 'A senha é obrigatória.',
-            'password.min'      => 'A senha deve ter pelo menos 6 caracteres.',
-            'password.confirmed'=> 'A confirmação de senha não confere.',
-            'role.required'     => 'A função é obrigatória.',
-            'role.in'           => 'A função selecionada é inválida.',
+            'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
+            'role.required' => 'A função é obrigatória.',
+            'role.in' => 'A função selecionada é inválida.',
         ]);
 
         User::create([
-            'email'    => $validated['email'],
+            'name' => $validated['name'] ?? explode('@', $validated['email'])[0],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role'     => $validated['role'],
+            'role' => $validated['role'],
         ]);
 
         return redirect()->route('users.index')
@@ -55,25 +60,29 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'name' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6', 'confirmed'],
-            'role'     => ['required', 'string', Rule::in(['admin', 'funcionario'])],
+            'role' => ['required', 'string', Rule::in(['admin', 'funcionario'])],
         ], [
-            'email.required'    => 'O e-mail é obrigatório.',
-            'email.email'       => 'Insira um e-mail válido.',
-            'email.unique'      => 'Este e-mail já está sendo utilizado.',
-            'password.min'      => 'A senha deve ter pelo menos 6 caracteres.',
-            'password.confirmed'=> 'A confirmação de senha não confere.',
-            'role.required'     => 'A função é obrigatória.',
-            'role.in'           => 'A função selecionada é inválida.',
+            'name.string' => 'O nome deve ser um texto válido.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'email.required' => 'O e-mail é obrigatório.',
+            'email.email' => 'Insira um e-mail válido.',
+            'email.unique' => 'Este e-mail já está sendo utilizado.',
+            'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
+            'role.required' => 'A função é obrigatória.',
+            'role.in' => 'A função selecionada é inválida.',
         ]);
 
         $data = [
+            'name' => $validated['name'] ?? $user->name,
             'email' => $validated['email'],
-            'role'  => $validated['role'],
+            'role' => $validated['role'],
         ];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);
         }
 

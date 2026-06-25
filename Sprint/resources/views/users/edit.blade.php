@@ -17,6 +17,15 @@
             @csrf
             @method('PUT')
 
+            {{-- Nome --}}
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-300 mb-1.5">Nome</label>
+                <input id="name" type="text" name="name" value="{{ old('name', $user->getRawAttribute('name')) }}" placeholder="Nome do usuário"
+                    class="w-full bg-gray-800 border rounded-lg px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition
+                           @error('name') border-red-500 bg-red-950/20 @else border-gray-700 @enderror">
+                @error('name')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
+            </div>
+
             {{-- Email --}}
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">E-mail <span class="text-red-500">*</span></label>

@@ -7,7 +7,9 @@ USE `sprint_db`;
 -- Users table
 CREATE TABLE IF NOT EXISTS `users` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL DEFAULT 'Usuário',
   `email` VARCHAR(255) NOT NULL,
+  `email_verified_at` TIMESTAMP NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('admin','funcionario') NOT NULL DEFAULT 'funcionario',
   `remember_token` VARCHAR(100) DEFAULT NULL,
@@ -55,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `clientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Optional: seeds example (inserts admin and employee users)
-INSERT INTO `users` (`email`, `password`, `role`, `created_at`, `updated_at`)
+INSERT INTO `users` (`name`, `email`, `password`, `role`, `created_at`, `updated_at`)
 VALUES 
-('admin@sprint.com', '$2y$10$BPYh.6KtCBzEyTQIF0wq.u1uv8hkNx92gAjncyU3cgvxK/Nhw/RjC', 'admin', NOW(), NOW()),
-('funcionario@sprint.com', '$2y$10$RxMuDL4zNY7NhHjWBXKBOedTHjJYsAfdEk.S0O2OhvqNAAvZeFzTS', 'funcionario', NOW(), NOW());
+('Administrador', 'admin@sprint.com', '$2y$10$BPYh.6KtCBzEyTQIF0wq.u1uv8hkNx92gAjncyU3cgvxK/Nhw/RjC', 'admin', NOW(), NOW()),
+('Funcionário', 'funcionario@sprint.com', '$2y$10$RxMuDL4zNY7NhHjWBXKBOedTHjJYsAfdEk.S0O2OhvqNAAvZeFzTS', 'funcionario', NOW(), NOW());
